@@ -9,10 +9,10 @@ from poem_model import PoemModel
 
 class PoemLsiModel(PoemModel):
     _model = None
-    _dictionary_path = os.path.dirname(__file__) + '/../model/lda_poem.txt'
-    _corpus_path = os.path.dirname(__file__) + '/../model/lda_poem.mm'
-    _index_path = os.path.dirname(__file__) + '/../model/lda_poem.index'
-    _model_path = os.path.dirname(__file__) + '/../model/lda_poem.model'
+    _dictionary_path = os.path.dirname(__file__) + '/../model/lsi_poem.txt'
+    _corpus_path = os.path.dirname(__file__) + '/../model/lsi_poem.mm'
+    _index_path = os.path.dirname(__file__) + '/../model/lsi_poem.index'
+    _model_path = os.path.dirname(__file__) + '/../model/lsi_poem.model'
 
     def __init__(self):
         super(PoemLsiModel, self).__init__()
@@ -24,6 +24,10 @@ class PoemLsiModel(PoemModel):
         self._corpus = self._create_corpus(words)
         self._model = self._create_model(num_topics)
         self._index = self._create_index()
+
+    def load(self):
+        self._model = models.LsiModel.load(self._model_path)
+        super(PoemLsiModel, self).load()
 
     def get_similar(self, sentence, n=10):
         words = self._extract_words(sentence)

@@ -25,6 +25,10 @@ class PoemLdaModel(PoemModel):
         self._model = self._create_model(num_topics)
         self._index = self._create_index()
 
+    def load(self):
+        self._model = models.LdaModel.load(self._model_path)
+        super(PoemLdaModel, self).load()
+
     def get_similar(self, sentence, n=10):
         words = self._extract_words(sentence)
         vec = self._model[self._dictionary.doc2bow(words)]
