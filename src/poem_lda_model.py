@@ -22,13 +22,11 @@ class PoemLdaModel(PoemModel):
         super(PoemLdaModel, self).__init__()
 
     def construct(self, no_below=1, no_above=0.4, num_topics=20):
-        sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
-        words = [self._extract_words(s) for s in sentences]
-        self._dictionary = self._create_dictionary(words, no_below, no_above)
-        self._corpus = self._create_corpus(words)
+        self._dictionary = self._create_dictionary(self._words, no_below, no_above)
+        self._corpus = self._create_corpus(self._words)
         self._model = self._create_model(num_topics)
         self._index = self._create_index()
-        self._feature_vector = self._create_feature_vector(words, num_topics)
+        self._feature_vector = self._create_feature_vector(self._words, num_topics)
 
     def load(self):
         self._model = models.LdaModel.load(self._model_path)

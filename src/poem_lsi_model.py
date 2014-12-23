@@ -10,7 +10,6 @@ from poem_model import PoemModel
 cd = os.path.dirname(__file__)
 
 class PoemLsiModel(PoemModel):
-
     _dictionary_path = '{0}/../model/lsi_poem.txt'.format(cd)
     _corpus_path = '{0}/../model/lsi_poem.mm'.format(cd)
     _index_path = '{0}/../model/lsi_poem.index'.format(cd)
@@ -23,13 +22,11 @@ class PoemLsiModel(PoemModel):
         super(PoemLsiModel, self).__init__()
 
     def construct(self, no_below=1, no_above=0.4, num_topics=20):
-        sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
-        words = [self._extract_words(s) for s in sentences]
-        self._dictionary = self._create_dictionary(words, no_below, no_above)
-        self._corpus = self._create_corpus(words)
+        self._dictionary = self._create_dictionary(self._words, no_below, no_above)
+        self._corpus = self._create_corpus(self._words)
         self._model = self._create_model(num_topics)
         self._index = self._create_index()
-        self._feature_vector = self._create_feature_vector(words)
+        self._feature_vector = self._create_feature_vector(self._words)
 
     def load(self):
         self._model = models.LsiModel.load(self._model_path)
