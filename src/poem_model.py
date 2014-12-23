@@ -68,7 +68,7 @@ class PoemModel(object):
 
     def _load_row_data(self):
         data = []
-        for line in open(self.in_path).readlines():
+        for line in open(self._data_path).readlines():
             columns = [c.rstrip() for c in line.split('\t')]
             data.append(columns)
         return data
