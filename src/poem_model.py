@@ -25,9 +25,9 @@ class PoemModel(object):
     _corpus_path = '{0}/../model/poem.mm'.format(cd)
     _index_path = '{0}/../model/poem.index'.format(cd)
 
-    def __init__(self, load=True):
-        if load:
-            self._data = self._load_row_data()
+    def __init__(self):
+        self._data = self._load_row_data()
+        self._words = self._create_words()
         self._corpus = None
         self._dictionary = None
         self._index = None
@@ -39,10 +39,8 @@ class PoemModel(object):
         no_below: cut off minimum word count through all sentences
         no_above: cut off maximum percentage of sentences that contain specific word
         """
-        sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
-        words = [self._extract_words(s) for s in sentences]
-        self._dictionary = self._create_dictionary(words, no_below, no_above)
-        self._corpus = self._create_corpus(words)
+        self._dictionary = self._create_dictionary(self._words, no_below, no_above)
+        self._corpus = self._create_corpus(self._words)
         self._index = self._create_index()
 
     def load(self):
@@ -73,6 +71,10 @@ class PoemModel(object):
             data.append(columns)
         return data
 
+    def _create_words(self):
+        sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
+        return [self._extract_words(s) for s in sentences]
+
     def _extract_words(self, sentence):
         tagger = MeCab.Tagger()
         node = tagger.parseToNode(self._remove_stop_words(sentence))
@@ -80,9 +82,12 @@ class PoemModel(object):
         while node:
             features = node.feature.split(",")
             if features[0] in self.ACCEPTABLE_CATEGORIES:
-                word = node.surface.decode('utf-8') if features[6] == '*' else features[6]
-                if re.match(r'\A[0-9]+\Z', word) is None: # remove word consist of only numbers
-                    words.append(word.lower())
+                try:
+                    word = node.surface.decode('utf-8') if features[6] == '*' else features[6]
+                    if re.match(r'\A[0-9]+\Z', word) is None: # remove word consist of only numbers
+                        words.append(word.lower())
+                except UnicodeDecodeError:
+                    pass
             node = node.next
         return words
 
