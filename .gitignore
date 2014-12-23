@@ -1,3 +1,6 @@
 *.py[cod]
 .idea
 _tmp
+model/*
+out/*
+res/*
