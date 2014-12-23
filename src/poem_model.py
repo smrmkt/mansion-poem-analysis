@@ -9,6 +9,12 @@ import re
 cd = os.path.dirname(__file__)
 
 class PoemModel(object):
+    """
+    CLASS CONSTANT
+
+    STOP_WORDS: symbols and numbers have no meaning, so should be removed.
+    ACCEPTABLE_CATEGORIES: these 3 categories seem to have outstanding characteristics
+    """
     STOP_WORDS = ['・', '"', '\'', '-', '—', '×',
                   '「', '」', '…', '（', '）', '/', '／',
                   '０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
@@ -28,6 +34,11 @@ class PoemModel(object):
         self._data = self._load_row_data()
 
     def construct(self, no_below=1, no_above=0.4):
+        """
+        this method is called when no model files exist.
+        no_below: cut off minimum word count through all sentences
+        no_above: cut off maximum percentage of sentences that contain specific word
+        """
         sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
         words = [self._extract_words(s) for s in sentences]
         self._dictionary = self._create_dictionary(words, no_below, no_above)
@@ -35,11 +46,20 @@ class PoemModel(object):
         self._index = self._create_index()
 
     def load(self):
+        """
+        load pre-constructed data
+        """
         self._dictionary = corpora.Dictionary.load_from_text(self._dictionary_path)
         self._corpus = corpora.MmCorpus(self._corpus_path)
         self._index = similarities.SparseMatrixSimilarity.load(self._index_path)
 
     def get_similar(self, sentence, n=10):
+        """
+        obtains a list of mansion name and score
+        sentence: target mansion poem to calculate similarity
+        n: number of list elements
+        return: list of mansion name and similarity score tuple
+        """
         words = self._extract_words(sentence)
         vec = self._dictionary.doc2bow(words)
         sims = self._index[vec]
