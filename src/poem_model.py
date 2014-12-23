@@ -20,18 +20,18 @@ class PoemModel(object):
                   '０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
     ACCEPTABLE_CATEGORIES = ['名詞', '動詞', '形容詞']
 
-    _corpus = None
-    _dictionary = None
-    _index = None
-    _model = None
-
     _data_path = '{0}/../data/mansion_poem_tokyo.tsv'.format(cd)
     _dictionary_path = '{0}/../model/poem.txt'.format(cd)
     _corpus_path = '{0}/../model/poem.mm'.format(cd)
     _index_path = '{0}/../model/poem.index'.format(cd)
 
     def __init__(self, load=True):
-        self._data = self._load_row_data()
+        if load:
+            self._data = self._load_row_data()
+        self._corpus = None
+        self._dictionary = None
+        self._index = None
+        self._model = None
 
     def construct(self, no_below=1, no_above=0.4):
         """

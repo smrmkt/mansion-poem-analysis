@@ -10,9 +10,6 @@ from poem_model import PoemModel
 cd = os.path.dirname(__file__)
 
 class PoemLdaModel(PoemModel):
-    _feature_vector = None
-    _model = None
-
     _dictionary_path = '{0}/../model/lda_poem.txt'.format(cd)
     _corpus_path = '{0}/../model/lda_poem.mm'.format(cd)
     _index_path = '{0}/../model/lda_poem.index'.format(cd)
@@ -20,6 +17,8 @@ class PoemLdaModel(PoemModel):
     _feature_vector_path = '{0}/../model/lda_poem.csv'.format(cd)
 
     def __init__(self):
+        self._feature_vector = None
+        self._model = None
         super(PoemLdaModel, self).__init__()
 
     def construct(self, no_below=1, no_above=0.4, num_topics=20):

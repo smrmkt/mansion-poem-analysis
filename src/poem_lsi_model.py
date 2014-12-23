@@ -10,8 +10,6 @@ from poem_model import PoemModel
 cd = os.path.dirname(__file__)
 
 class PoemLsiModel(PoemModel):
-    _feature_vector = None
-    _model = None
 
     _dictionary_path = '{0}/../model/lsi_poem.txt'.format(cd)
     _corpus_path = '{0}/../model/lsi_poem.mm'.format(cd)
@@ -20,6 +18,8 @@ class PoemLsiModel(PoemModel):
     _feature_vector_path = '{0}/../model/lsi_poem.csv'.format(cd)
 
     def __init__(self):
+        self._feature_vector = None
+        self._model = None
         super(PoemLsiModel, self).__init__()
 
     def construct(self, no_below=1, no_above=0.4, num_topics=20):
