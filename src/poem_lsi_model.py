@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 
-from gensim import corpora, models, similarities
+from gensim import models, similarities
 import numpy as np
 import os.path
 
