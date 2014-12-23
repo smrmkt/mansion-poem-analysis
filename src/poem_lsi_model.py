@@ -2,17 +2,22 @@
 #-*-coding:utf-8-*-
 
 from gensim import corpora, models, similarities
+import numpy as np
 import os.path
 
 from poem_model import PoemModel
 
+cd = os.path.dirname(__file__)
 
 class PoemLsiModel(PoemModel):
+    _feature_vector = None
     _model = None
-    _dictionary_path = os.path.dirname(__file__) + '/../model/lsi_poem.txt'
-    _corpus_path = os.path.dirname(__file__) + '/../model/lsi_poem.mm'
-    _index_path = os.path.dirname(__file__) + '/../model/lsi_poem.index'
-    _model_path = os.path.dirname(__file__) + '/../model/lsi_poem.model'
+
+    _dictionary_path = '{0}/../model/lsi_poem.txt'.format(cd)
+    _corpus_path = '{0}/../model/lsi_poem.mm'.format(cd)
+    _index_path = '{0}/../model/lsi_poem.index'.format(cd)
+    _model_path = '{0}/../model/lsi_poem.model'.format(cd)
+    _feature_vector_path = '{0}/../model/lsi_poem.csv'.format(cd)
 
     def __init__(self):
         super(PoemLsiModel, self).__init__()
@@ -24,9 +29,11 @@ class PoemLsiModel(PoemModel):
         self._corpus = self._create_corpus(words)
         self._model = self._create_model(num_topics)
         self._index = self._create_index()
+        self._feature_vector = self._create_feature_vector(words)
 
     def load(self):
         self._model = models.LsiModel.load(self._model_path)
+        self._feature_vector = np.loadtxt(self._feature_vector_path, delimiter=',')
         super(PoemLsiModel, self).load()
 
     def get_similar(self, sentence, n=10):
@@ -47,3 +54,12 @@ class PoemLsiModel(PoemModel):
         index = similarities.MatrixSimilarity(self._model[self._corpus])
         index.save(self._index_path)
         return index
+
+    def _create_feature_vector(self, words):
+        feature_vector = []
+        for w in words:
+            v = [kv[1] for kv in self._model[self._dictionary.doc2bow(w)]]
+            feature_vector.append(v)
+        feature_vector = np.array(feature_vector)
+        np.savetxt(self._feature_vector_path, feature_vector, delimiter=',')
+        return feature_vector
