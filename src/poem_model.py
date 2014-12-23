@@ -25,7 +25,7 @@ class PoemModel(object):
     _index_path = '{0}/../model/poem.index'.format(cd)
 
     def __init__(self, load=True):
-        self._data = self._load_row_data(self._data_path)
+        self._data = self._load_row_data()
 
     def construct(self, no_below=1, no_above=0.4):
         sentences = ['{0} {1}'.format(row[-2], row[-1]) for row in self._data]
@@ -46,9 +46,9 @@ class PoemModel(object):
         top_n = sorted(enumerate(sims), key=lambda item: -item[1])[:n]
         return [(self._data[k][1], v) for k, v in top_n]
 
-    def _load_row_data(self, in_path):
+    def _load_row_data(self):
         data = []
-        for line in open(in_path).readlines():
+        for line in open(self.in_path).readlines():
             columns = [c.rstrip() for c in line.split('\t')]
             data.append(columns)
         return data
