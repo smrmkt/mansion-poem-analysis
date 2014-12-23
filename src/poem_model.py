@@ -15,17 +15,19 @@ class PoemModel(object):
     STOP_WORDS: symbols and numbers have no meaning, so should be removed.
     ACCEPTABLE_CATEGORIES: these 3 categories seem to have outstanding characteristics
     """
-    STOP_WORDS = ['・', '"', '\'', '-', '—', '×',
-                  '「', '」', '…', '（', '）', '/', '／',
-                  '０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
+    PRE_STOP_WORDS = ['・', '"', '\'', '-', '—', '×',
+                      '「', '」', '…', '（', '）', '/', '／',
+                      '０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
     ACCEPTABLE_CATEGORIES = ['名詞', '動詞', '形容詞']
 
     _data_path = '{0}/../data/mansion_poem_tokyo.tsv'.format(cd)
+    _stop_words_path = '{0}/../res/stop_words.txt'.format(cd)
     _dictionary_path = '{0}/../model/poem.txt'.format(cd)
     _corpus_path = '{0}/../model/poem.mm'.format(cd)
     _index_path = '{0}/../model/poem.index'.format(cd)
 
     def __init__(self):
+        self._stop_words = [w.rstrip() for w in open(self._stop_words_path).readlines()]
         self._data = self._load_row_data()
         self._words = self._create_words()
         self._corpus = None
@@ -80,22 +82,30 @@ class PoemModel(object):
 
     def _extract_words(self, sentence):
         tagger = MeCab.Tagger()
-        node = tagger.parseToNode(self._remove_stop_words(sentence))
+        node = tagger.parseToNode(self._remove_pre_stop_words(sentence))
         words = []
         while node:
             features = node.feature.split(",")
             if features[0] in self.ACCEPTABLE_CATEGORIES:
                 try:
                     word = node.surface.decode('utf-8') if features[6] == '*' else features[6]
-                    if re.match(r'\A[0-9]+\Z', word) is None: # remove word consist of only numbers
+                    if self._is_acceptable(word):
                         words.append(word.lower())
                 except UnicodeDecodeError:
                     pass
             node = node.next
         return words
 
-    def _remove_stop_words(self, sentence):
-        for word in self.STOP_WORDS:
+    def _is_acceptable(self, word):
+        if re.match(r'\A[0-9]+\Z', word): # remove word consist of only numbers
+            return False
+        elif word in self._stop_words:
+            return False
+        else:
+            return True
+
+    def _remove_pre_stop_words(self, sentence):
+        for word in self.PRE_STOP_WORDS:
             sentence = sentence.replace(word, ' ')
         return sentence
 
