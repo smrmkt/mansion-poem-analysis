@@ -63,6 +63,10 @@ class PoemModel(object):
         top_n = sorted(enumerate(sims), key=lambda item: -item[1])[:n]
         return [(self._data[k][1], v) for k, v in top_n]
 
+    @property
+    def words(self):
+        return self._words
+
     def _load_row_data(self):
         data = []
         for line in open(self._data_path).readlines():
