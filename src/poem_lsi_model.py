@@ -43,6 +43,10 @@ class PoemLsiModel(PoemModel):
         top_n = sorted(enumerate(sims), key=lambda item: -item[1])[:n]
         return [(self._data[k][1], v) for k, v in top_n]
 
+    @property
+    def feature_vector(self):
+        return self._feature_vector
+
     def _create_model(self, num_topics):
         self._model = models.LsiModel(corpus=self._corpus,
                                       num_topics=num_topics,
