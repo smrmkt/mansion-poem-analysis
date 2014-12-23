@@ -31,7 +31,6 @@ class PoemModel(object):
         self._corpus = None
         self._dictionary = None
         self._index = None
-        self._model = None
 
     def construct(self, no_below=1, no_above=0.4):
         """
