@@ -20,6 +20,7 @@ class PoemModel(object):
                       '０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
     ACCEPTABLE_CATEGORIES = ['名詞', '動詞', '形容詞']
 
+    _mecab_dic_path = '{0}/../res/mansion_poem_dictionary.dic'.format(cd)
     _data_path = '{0}/../data/mansion_poem_tokyo.tsv'.format(cd)
     _stop_words_path = '{0}/../res/stop_words.txt'.format(cd)
     _dictionary_path = '{0}/../model/poem.txt'.format(cd)
@@ -81,7 +82,7 @@ class PoemModel(object):
         return [self._extract_words(s) for s in sentences]
 
     def _extract_words(self, sentence):
-        tagger = MeCab.Tagger()
+        tagger = MeCab.Tagger('-u {0}'.format(self._mecab_dic_path))
         node = tagger.parseToNode(self._remove_pre_stop_words(sentence))
         words = []
         while node:
