@@ -3,3 +3,4 @@
 _tmp
 python/model/*
 python/out/*
+.Rproj.user
