@@ -67,6 +67,10 @@ class PoemModel(object):
         return [(self._data[k][1], v) for k, v in top_n]
 
     @property
+    def data(self):
+        return self._data
+
+    @property
     def words(self):
         return self._words
 
