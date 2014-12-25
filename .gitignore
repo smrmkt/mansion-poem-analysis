@@ -4,3 +4,6 @@ _tmp
 python/model/*
 python/out/*
 .Rproj.user
+r/out/*
+r/.RData
+r/.Rhistory
