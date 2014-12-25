@@ -1,5 +1,5 @@
 *.py[cod]
 .idea
 _tmp
-model/*
-out/*
+python/model/*
+python/out/*
