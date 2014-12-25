@@ -45,7 +45,7 @@ if __name__ == '__main__':
     shutil.rmtree(out_path)
     os.mkdir(out_path)
     with open('{0}/label.txt'.format(out_path), 'w') as f:
-        f.write('\n'.join(['{0}\t{1}'.format(k, v) for k, v in enumerate(labels)]))
+        f.write('\n'.join(['{0}'.format(l) for l in labels]))
 
     # write out words used in each cluster
     words_by_clusters = [[] for i in range(num_cluster)]
