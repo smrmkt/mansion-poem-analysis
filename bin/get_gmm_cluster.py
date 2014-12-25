@@ -19,6 +19,7 @@ sys.path.append(script_path + '/../src')
 out_path = '{0}/../out/words'.format(script_path)
 
 from gmm_clustering import GmmClustering
+from kml_generator import KmlGenerator
 from poem_lda_model import PoemLdaModel
 
 # args
@@ -54,3 +55,12 @@ if __name__ == '__main__':
     for i in range(num_cluster):
         with open('{0}/cluster{1}.txt'.format(out_path, i), 'w') as f:
             f.write(sentences_by_clusters[i])
+
+    # write out kml file
+    coordinates = [[row[2], row[3]] for row in lda_model.data]
+    for i in range(num_cluster):
+        targets = [(c[0], c[1]) for j, c in enumerate(coordinates) if i == labels[j]]
+        title = 'Graph of GMM Cluster {0}'.format(str(i))
+        kml = KmlGenerator().generate(title, targets)
+        with open('{0}/cluster{1}.kml'.format(out_path, i), 'w') as f:
+            f.write(kml)
