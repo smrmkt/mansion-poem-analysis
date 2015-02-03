@@ -17,7 +17,7 @@ main_developer = function(dev_list) {
   }
   v
 }
-
+ 
 # load data
 mantions = read.delim('../python/data/mansion_poem_tokyo.tsv',
                       header=F,
